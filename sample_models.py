@@ -145,13 +145,13 @@ def final_model(input_dim, units, output_dim=29):
 
     # Add recurrent layer
     rnn1 = GRU(units, activation='relu',
-        return_sequences=True, implementation=2)(input_data)
+        return_sequences=True, implementation=2, dropout=.2, recurrent_dropout=.2)(input_data)
     bn_rnn1 = BatchNormalization()(rnn1)
-    rnn2 = GRU(units, activation='relu',
-        return_sequences=True, implementation=2)(bn_rnn1)
-    bn_rnn2 = BatchNormalization()(rnn2)
-
-    time_dense1 = TimeDistributed(Dense(output_dim))(bn_rnn2)
+    #rnn2 = GRU(units, activation='relu',return_sequences=True, implementation=2, dropout=.2, recurrent_dropout=.2)(bn_rnn1)
+    #bn_rnn2 = BatchNormalization()(rnn2)
+    dense_1 = Dense(2 * output_dim)(bn_rnn1)
+    bn_dense_1 = BatchNormalization()(dense_1)
+    time_dense1 = TimeDistributed(Dense(output_dim))(bn_dense_1)
     # Add softmax activation layer
     y_pred = Activation('softmax', name='softmax')(time_dense1)
     # Specify the model
